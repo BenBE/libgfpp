@@ -194,11 +194,11 @@ namespace impl {
 template <
     int Poly,
     typename T = typename smallest_uint<bit_width(Poly) - 1>::type,
-    typename Impl = typename impl::calc_lookup<Poly, T>
+    template <int, typename> typename Impl = impl::calc_lookup
 >
 class GF : public impl::attr<Poly, T> {
 public:
-    using impl_type = Impl;
+    using impl_type = Impl<Poly, T>;
     using value_type = typename impl_type::value_type;
 
     constexpr GF() : value(impl_type::zero) {}
