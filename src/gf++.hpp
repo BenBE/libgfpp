@@ -189,12 +189,23 @@ namespace impl {
         static constexpr std::array<value_type, attr_type::order> log_table = generate_log_table();
     };
 
+template <
+    int Poly,
+    typename T = typename smallest_uint<bit_width(Poly) - 1>::type>
+class calc_default :
+    public std::conditional<
+        (bit_width(Poly) - 1 > 16),
+        impl::calc_inline<Poly, T>,
+        impl::calc_lookup<Poly, T>
+    >::type
+{};
+
 }
 
 template <
     int Poly,
     typename T = typename smallest_uint<bit_width(Poly) - 1>::type,
-    template <int, typename> typename Impl = impl::calc_lookup
+    template <int, typename> typename Impl = impl::calc_default
 >
 class GF : public impl::attr<Poly, T> {
 public:
